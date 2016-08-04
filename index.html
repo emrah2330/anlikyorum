@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title>NodeJs ile Anlık Çizim</title>
+	<script src="http://www.uzmancevap.org/template/plugins/jquery/jquery-1.11.3.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+	var socket = io.connect();
+	
+	$(function(){
+				$("textarea.yorumyap").keypress(function(e){ //Textarea üzerinde herhangi bir tuşa basılırsa
+			if(e.which == 13){ // basılan tuş eğer enter ise
+				var yorum = $(this).val(); // textarea içerisindeki yorum değerini değişkene aktardım.
+				socket.emit('yorumgonder',yorum); // ve daha sonra bunu server.js socket.emit ile yorumgonder adındaki fonksiyona gönderdim
+				$(this).val(''); // yorumu server tarafına gönderdikten sonra textarea içerisindeki yorumu sildim
+			}});
+			
+			socket.on('yorumugerigonder',function(data){ // server.js de io.emit('yorumugerigonder',data) ile gonderdiğim değeri alıp ekrana yazdırıyorum.
+		$("ul.yorumlar").append('<li>'+data+'</li>');
+	});
+	});
+
+	
+	
+	
+	</script>
+	<style type="text/css">
+	.genel{
+		width:900px;
+		border:1px solid #ddd;
+		margin:0 auto;
+		overflow:hidden;
+		padding:10px;
+		
+	}
+	ul.yorumlar{
+		list-style:none;
+		margin:0;
+		padding:0;
+	}
+	ul.yorumlar li{
+	padding:10px;
+	border-bottom:1px solid #ddd;
+	font-size:16px;
+	}
+	textarea.yorumyap{
+		padding:10px;
+		border:1px solid #ddd;
+		resize:none;
+		width:878px;
+	}
+	</style>
+</head>
+<body>
+	<div class="genel">
+			<ul class="yorumlar">
+				
+			</ul>
+			<textarea placeholder="birşeyler yaz ve [ENTER]'a bas." name="yorumyap" class="yorumyap"></textarea>
+	</div>
+</body>
+</html>
